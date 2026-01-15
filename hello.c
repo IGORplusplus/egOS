@@ -1,4 +1,3 @@
-#include <stdio.h>
 void terminal_write(const char *str, int len) {
     for (int i = 0; i < len; i++) {
         *(char*)(0x10000000) = str[i];
@@ -165,7 +164,7 @@ int printf(const char* format, ...) {
     va_copy(args_copy, args);
 
     unsigned int len = format_to_str_len(format, args_copy);
-    char *buf = malloc(len + 1);
+    char *buf = malloc(len);
 
     format_to_str(buf, format, args);
     va_end(args);
