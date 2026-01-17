@@ -1,8 +1,13 @@
 /* Student's code goes here (Cooperative Threads). */
-enum thread_status {
-	THREAD_RUNNING,
-    /* Define the various possible status of a thread. */
+#ifndef THREAD_H
+#define THREAD_H
+#include "queue.h"
 
+enum thread_status {
+    THREAD_RUNNING,
+    THREAD_WAITING,
+    THREAD_BLOCKED,
+    THREAD_KILLED,
 };
 
 struct thread {
@@ -10,8 +15,16 @@ struct thread {
     void* sp;
     enum thread_status status;
     /* Define the data structure for thread control block. */
-
+    void (*entry_function)(void *);
+    void *entry_args;
+    //context
+    uintptr_t registers[32];
+    int stack_size;
+    int *stack_base;
 };
+
+int curr_idx; //current thread
+struct thread *TCB;
 
 struct cv {
     /* Define the data structure for conditional variables. */
@@ -25,7 +38,7 @@ struct cv {
 #define STACK_SIZE 1024
 
 /* ctx_start() and ctx_switch() are defined in context.s */
-void  ctx_start(void **sp_old, void *sp_new);
+void ctx_start(void **sp_old, void *sp_new);
 void ctx_switch(void **sp_old, void *sp_new);
 
 /* _end() is defined in thread.s */
@@ -95,3 +108,5 @@ void cv_wait(struct cv *condition);
  * thread should continue to run).
  */
 void cv_signal(struct cv *condition);
+
+#endif
